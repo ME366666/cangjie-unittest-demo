@@ -1,0 +1,7 @@
+# Cangjie build artifacts
+target/
+*.lock
+
+# IDE
+.vscode/
+.idea/
