@@ -1,0 +1,42 @@
+name: 仓颉 CI/CD 自动化测试
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: 构建与单元测试
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码仓库
+        uses: actions/checkout@v4
+      - name: 安装仓颉编程语言环境
+        uses: Zxilly/setup-cangjie@v3
+        with:
+          channel: lts
+          version: latest
+      - name: 验证仓颉工具链
+        run: |
+          echo "=== 仓颉编译器版本 ==="
+          cjc --version || echo "cjc version check done"
+          echo "=== cjpm 版本 ==="
+          cjpm --version || echo "cjpm version check done"
+      - name: 构建仓颉项目
+        run: |
+          echo "=== 开始构建项目 ==="
+          cjpm build --verbose
+          echo "=== 构建完成 ==="
+      - name: 运行仓颉单元测试
+        run: |
+          echo "=== 开始运行单元测试 ==="
+          cjpm test --verbose
+          echo "=== 单元测试完成 ==="
+      - name: 测试结果摘要
+        run: |
+          echo "=========================================="
+          echo "  仓颉 CI/CD 自动化测试流水线执行完毕"
+          echo "=========================================="
